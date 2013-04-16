@@ -13,6 +13,8 @@
 		6D4010E1171D263800F5A98E /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6D4010DF171D263800F5A98E /* Credits.rtf */; };
 		6D4010E4171D263800F5A98E /* SHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4010E3171D263800F5A98E /* SHAppDelegate.m */; };
 		6D4010E7171D263800F5A98E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D4010E5171D263800F5A98E /* MainMenu.xib */; };
+		6D85295D171D497C002E0CDD /* Multimedia-53.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295C171D497C002E0CDD /* Multimedia-53.png */; };
+		6D85295F171D9668002E0CDD /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295E171D9668002E0CDD /* icon.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		6D4010E2171D263800F5A98E /* SHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHAppDelegate.h; sourceTree = "<group>"; };
 		6D4010E3171D263800F5A98E /* SHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHAppDelegate.m; sourceTree = "<group>"; };
 		6D4010E6171D263800F5A98E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		6D85295C171D497C002E0CDD /* Multimedia-53.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Multimedia-53.png"; sourceTree = "<group>"; };
+		6D85295E171D9668002E0CDD /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +97,8 @@
 		6D4010D7171D263800F5A98E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6D85295E171D9668002E0CDD /* icon.icns */,
+				6D85295C171D497C002E0CDD /* Multimedia-53.png */,
 				6D4010D8171D263800F5A98E /* Shuffler-Info.plist */,
 				6D4010D9171D263800F5A98E /* InfoPlist.strings */,
 				6D4010DC171D263800F5A98E /* main.m */,
@@ -157,6 +163,8 @@
 				6D4010DB171D263800F5A98E /* InfoPlist.strings in Resources */,
 				6D4010E1171D263800F5A98E /* Credits.rtf in Resources */,
 				6D4010E7171D263800F5A98E /* MainMenu.xib in Resources */,
+				6D85295D171D497C002E0CDD /* Multimedia-53.png in Resources */,
+				6D85295F171D9668002E0CDD /* icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +276,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Shuffler/Shuffler-Prefix.pch";
 				INFOPLIST_FILE = "Shuffler/Shuffler-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -280,6 +289,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Shuffler/Shuffler-Prefix.pch";
 				INFOPLIST_FILE = "Shuffler/Shuffler-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -304,6 +314,7 @@
 				6D4010EC171D263800F5A98E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
