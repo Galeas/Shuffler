@@ -8,54 +8,64 @@
 
 #import "SHAppDelegate.h"
 
+@interface SHAppDelegate()
+{
+    BOOL needReload;
+}
+@end
+
 @implementation SHAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    needReload = NO;
     [self setNameLength:@(5)];
     [self setPercentage:@(0)];
-    [self setIncludeSubdirs:NO];
+    [self setIncludeSubdirs:YES];
+    [self addObserver:self forKeyPath:@"includeSubdirs" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"includeSubdirs"]) {
+        [self setToPerform:nil];
+        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
+        [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
+    }
 }
 
 - (IBAction)shuffle:(id)sender
 {
-    //NSURL *pathURL = self.pathControl.URL;
-    NSArray *source = self.items;
     [self setPercentage:@(0)];
+    if (needReload) {
+        [self setItems:nil];
+        [self setToPerform:nil];
+    }
     switch ([self.radioGroup selectedRow]) {
         case 0: {
-            [self renameByNumbers:source];
+            [self renameByNumbers:[self toPerform]];
             break;
         }
         case 1: {
-            [self renameByLetters:source];
+            [self renameByLetters:[self toPerform]];
             break;
         }
         default: break;
     }
+    needReload = YES;
 }
 
 - (IBAction)loadContent:(id)sender
 {
     [self setAllEnabled:NO];
     self.items = nil;
-    self.items = [self pathsFrom:[sender URL] includeSub:self.includeSubdirs];
+    [self setItems:[self pathsFrom:self.pathURL]];
     if (self.items) {
         [self setAllEnabled:YES];
-        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.items.count]];
-        /*NSString *path = [[sender URL] path];
-        FSRef f;
-        OSStatus os_status = FSPathMakeRef((const UInt8 *)[path fileSystemRepresentation], &f, NULL);
-        if (os_status == noErr) {
-            NSLog(@"%1.0f", ((double)[self folderSizeAtFSRef:&f]/1024)/1024);
-        }*/
+        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
+        [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
     }
-}
-
-- (IBAction)filterSubdirs:(id)sender
-{
-    [self loadContent:self.pathControl];
 }
 
 - (void)setAllEnabled:(BOOL)enabled
@@ -74,61 +84,66 @@
 - (NSArray *)items
 {
     if (!_items) {
-        _items = [self pathsFrom:[self.pathControl URL] includeSub:self.includeSubdirs];
+        _items = [self pathsFrom:self.pathURL];
+        needReload = NO;
     }
     return _items;
 }
 
-- (NSArray*)pathsFrom:(NSURL*)folderURL includeSub:(BOOL)include
+- (NSArray *)toPerform
 {
-    NSMutableArray *result = nil;
-    if (include) {
-        NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtURL:folderURL includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error){return YES;}];
-        for (NSURL *url in enumerator) {
-            NSError *error;
-            NSNumber *isDirectory = nil;
-            if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
-                // handle error
-            }
-            else if (! [isDirectory boolValue]) {
-                // No error and it’s not a directory; do something with the file
-                BOOL isHidden = NO;
-                for (NSString *component in url.pathComponents) {
-                    if ([component hasPrefix:@"."]) {
-                        isHidden = YES;
-                        break;
-                    }
-                }
-                if (!isHidden) {
-                    if (!result) result = [NSMutableArray new];
-                    [result addObject:url.path];
+    if (!_toPerform) {
+        NSString *myPath = self.pathURL.path;
+        if (self.includeSubdirs) {
+            _toPerform = [self.items copy];
+        }
+        else {
+            NSMutableArray *result = [NSMutableArray new];
+            for (NSString *path in self.items) {
+                if ([[[[path componentsSeparatedByString:myPath] objectAtIndex:1] pathComponents] count] == 2) {
+                    [result addObject:path];
                 }
             }
+            _toPerform = result;
         }
     }
-    else {
-        NSError *error = nil;
-        NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:folderURL includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 error:&error];
-        for (NSURL *url in content) {
-            NSError *error;
-            NSNumber *isDirectory = nil;
-            if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
-                // handle error
+    return _toPerform;
+}
+
+- (NSArray*)pathsFrom:(NSURL*)folderURL
+{
+    NSMutableArray *result = nil;
+    [self setPercentage:nil];
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtURL:folderURL includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error){return YES;}];
+    NSEnumerator *testEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:folderURL includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error){return YES;}];;
+    NSArray *arr = [testEnumerator allObjects];
+    NSUInteger allCount = [arr count];
+    testEnumerator = nil;
+    for (NSURL *url in enumerator) {
+        NSError *error;
+        NSNumber *isDirectory = nil;
+        if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
+            // handle error
+        }
+        else if ([isDirectory boolValue]) {
+            allCount--;
+        }
+        else {
+            // No error and it’s not a directory; do something with the file
+            BOOL isHidden = NO;
+            for (NSString *component in url.pathComponents) {
+                if ([component hasPrefix:@"."]) {
+                    isHidden = YES;
+                    allCount--;
+                    break;
+                }
             }
-            else if (! [isDirectory boolValue]) {
-                BOOL isHidden = NO;
-                for (NSString *component in url.pathComponents) {
-                    if ([component hasPrefix:@"."]) {
-                        isHidden = YES;
-                        break;
-                    }
-                }
-                if (!isHidden) {
-                    if (!result) result = [NSMutableArray new];
-                    [result addObject:url.path];
-                }
+            if (!isHidden) {
+                if (!result) result = [NSMutableArray new];
+                [result addObject:url.path];
             }
         }
+        [self setPercentage:@(((float)result.count/(float)allCount)*100)];
     }
     return result;
 }
@@ -207,64 +222,38 @@
         }
     }
 }
-/*
-- (unsigned long long)folderSizeAtFSRef:(FSRef*)theFileRef
+
+- (id)transformedValue:(id)value
 {
-    FSIterator    thisDirEnum = NULL;
-    unsigned long long totalSize = 0;
     
-    // Iterate the directory contents, recursing as necessary
-    if (FSOpenIterator(theFileRef, kFSIterateFlat, &thisDirEnum) == noErr)
-    {
-        const ItemCount kMaxEntriesPerFetch = 256;
-        ItemCount actualFetched;
-        FSRef    fetchedRefs[kMaxEntriesPerFetch];
-        FSCatalogInfo fetchedInfos[kMaxEntriesPerFetch];
-        
-        // DCJ Note right now this is only fetching data fork sizes... if we decide to include
-        // resource forks we will have to add kFSCatInfoRsrcSizes
-            
-        OSErr fsErr = FSGetCatalogInfoBulk(thisDirEnum,
-                                            kMaxEntriesPerFetch, &actualFetched,
-                                            NULL, kFSCatInfoDataSizes |
-                                            kFSCatInfoNodeFlags, fetchedInfos,
-                                            fetchedRefs, NULL, NULL);
-        while ((fsErr == noErr) || (fsErr == errFSNoMoreItems))
-        {
-            ItemCount thisIndex;
-            for (thisIndex = 0; thisIndex < actualFetched; thisIndex++)
-            {
-                // Recurse if it's a folder
-                if (fetchedInfos[thisIndex].nodeFlags &
-                    kFSNodeIsDirectoryMask)
-                {
-                    totalSize += [self folderSizeAtFSRef:&fetchedRefs[thisIndex]];
-                }
-                else
-                {
-                    // add the size for this item
-                    totalSize += fetchedInfos
-                    [thisIndex].dataLogicalSize;
-                }
-            }
-            
-            if (fsErr == errFSNoMoreItems)
-            {
-                break;
-            }
-            else
-            {
-                // get more items
-                fsErr = FSGetCatalogInfoBulk(thisDirEnum,
-                                             kMaxEntriesPerFetch, &actualFetched,
-                                             NULL, kFSCatInfoDataSizes |
-                                             kFSCatInfoNodeFlags, fetchedInfos,
-                                             fetchedRefs, NULL, NULL);
-            }
+    double convertedValue = [value doubleValue];
+    int multiplyFactor = 0;
+    
+    NSArray *tokens = [NSArray arrayWithObjects:@"bytes",@"KiB",@"MiB",@"GiB",@"TiB",nil];
+    
+    while (convertedValue > 1024) {
+        convertedValue /= 1024;
+        multiplyFactor++;
+    }
+    return [NSString stringWithFormat:@"%4.2f %@",convertedValue, [tokens objectAtIndex:multiplyFactor]];
+}
+
+- (unsigned long long)sizeToPerform
+{
+    unsigned long long totalSize = 0;
+    for (NSString *path in self.toPerform) {
+        NSError *error = nil;
+        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+        if (!error) {
+            totalSize += [attributes fileSize];
         }
-        FSCloseIterator(thisDirEnum);
     }
     return totalSize;
-}*/
+}
+
+- (NSString*)sizeToPerformString
+{
+    return [NSString stringWithFormat:@"%@", [self transformedValue:@([self sizeToPerform])]];
+}
 
 @end

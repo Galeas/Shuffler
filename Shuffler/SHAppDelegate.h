@@ -14,6 +14,7 @@
 @property (weak) IBOutlet NSPathControl *pathControl;
 @property (weak) IBOutlet NSMatrix *radioGroup;
 @property (weak) IBOutlet NSTextField *foundLabel;
+@property (weak) IBOutlet NSTextField *totalSizeLabel;
 
 @property (weak) id nameLength;
 @property (assign) BOOL stringSelected;
@@ -22,9 +23,9 @@
 @property (weak) NSURL *pathURL;
 
 @property (strong, nonatomic) NSArray *items;
+@property (strong, nonatomic) NSArray *toPerform;
 
 - (IBAction)shuffle:(id)sender;
 - (IBAction)loadContent:(id)sender;
-- (IBAction)filterSubdirs:(id)sender;
 
 @end
