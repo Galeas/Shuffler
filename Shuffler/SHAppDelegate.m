@@ -138,8 +138,8 @@
         __block YRKSpinningProgressIndicator *ind = [[YRKSpinningProgressIndicator alloc] initWithFrame:[self.window.contentView bounds]];
         [ind setIndeterminate:YES];
         [ind setDrawsBackground:YES];
-        [ind setBackgroundColor:[NSColor colorWithCalibratedRed:1 green:.7 blue:.7 alpha:.5]];
-        [ind setColor:[NSColor lightGrayColor]];
+        [ind setBackgroundColor:[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:.5]];
+        [ind setColor:[NSColor colorWithCalibratedRed:1 green:.7 blue:.7 alpha:.5]];
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.window.contentView addSubview:ind];
             [ind startAnimation:self];
@@ -177,11 +177,13 @@
                 if (!isHidden) {
                     if (!result) result = [NSMutableArray new];
                     [result addObject:url.path];
+                    
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self setPercentage:@(((float)result.count/(float)allCount)*100)];
+                        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", result.count]];
+                    });
                 }
             }
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self setPercentage:@(((float)result.count/(float)allCount)*100)];
-            });
         }
         if (completionHandler) {
             completionHandler(result);
@@ -222,8 +224,11 @@
                     NSString *new_path = [[directoryPath stringByAppendingPathComponent:randomString] stringByAppendingPathExtension:ext];
                     [[NSFileManager defaultManager] moveItemAtPath:old_path toPath:new_path error:&error];
                     [used addObject:randomString];
-                    [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
-                    [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
+                    
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
+                        [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
+                    });
                 }
             }
             else {
