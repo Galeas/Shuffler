@@ -42,19 +42,14 @@
     if (needReload) {
         [self setItems:nil];
         [self setToPerform:nil];
+        [self pathsFrom:self.pathURL completion:^(NSArray* array){
+            [self setItems:array];
+            [self shuffleByIndex:[self.radioGroup selectedRow]];
+        }];
     }
-    switch ([self.radioGroup selectedRow]) {
-        case 0: {
-            [self renameByNumbers:[self toPerform]];
-            break;
-        }
-        case 1: {
-            [self renameByLetters:[self toPerform]];
-            break;
-        }
-        default: break;
+    else {
+        [self shuffleByIndex:[self.radioGroup selectedRow]];
     }
-    needReload = YES;
 }
 
 - (IBAction)loadContent:(id)sender
@@ -68,8 +63,25 @@
             [self setAllEnabled:YES];
             [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
             [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
+            if (needReload) needReload = NO;
         }
     }];
+}
+
+- (void)shuffleByIndex:(NSInteger)index
+{
+    switch (index) {
+        case 0: {
+            [self renameByNumbers:[self toPerform]];
+            break;
+        }
+        case 1: {
+            [self renameByLetters:[self toPerform]];
+            break;
+        }
+        default: break;
+    }
+    needReload = YES;
 }
 
 - (void)setAllEnabled:(BOOL)enabled

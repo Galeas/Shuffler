@@ -8,7 +8,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Shuffler/SHAppDelegate.m"
-         timestampString = "388400553.509453"
+         timestampString = "388405454.288539"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "44"
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Shuffler/SHAppDelegate.m"
-         timestampString = "388404056.667474"
+         timestampString = "388405706.900946"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "102"
-         endingLineNumber = "102"
+         startingLineNumber = "114"
+         endingLineNumber = "114"
          landmarkName = "-toPerform"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Shuffler/SHAppDelegate.m"
-         timestampString = "388404056.667474"
+         timestampString = "388405706.900946"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "93"
-         endingLineNumber = "93"
+         startingLineNumber = "105"
+         endingLineNumber = "105"
          landmarkName = "@implementation SHAppDelegate"
          landmarkType = "3">
       </FileBreakpoint>
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Shuffler/SHAppDelegate.m"
-         timestampString = "388400553.509453"
+         timestampString = "388405706.900946"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "65"
-         endingLineNumber = "65"
+         startingLineNumber = "60"
+         endingLineNumber = "60"
          landmarkName = "-loadContent:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -66,6 +66,45 @@
          startingLineNumber = "105"
          endingLineNumber = "105"
          landmarkName = "-drawRect:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Shuffler/SHAppDelegate.m"
+         timestampString = "388405354.37984"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "41"
+         endingLineNumber = "41"
+         landmarkName = "-shuffle:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Shuffler/SHAppDelegate.m"
+         timestampString = "388405706.900946"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "238"
+         endingLineNumber = "238"
+         landmarkName = "-renameByNumbers:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Shuffler/SHAppDelegate.m"
+         timestampString = "388405706.900946"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "194"
+         endingLineNumber = "194"
+         landmarkName = "-renameByLetters:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
