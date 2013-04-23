@@ -15,6 +15,7 @@
 		6D4010E7171D263800F5A98E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D4010E5171D263800F5A98E /* MainMenu.xib */; };
 		6D85295D171D497C002E0CDD /* Multimedia-53.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295C171D497C002E0CDD /* Multimedia-53.png */; };
 		6D85295F171D9668002E0CDD /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295E171D9668002E0CDD /* icon.icns */; };
+		6DB9694C1726833F0085CCF9 /* YRKSpinningProgressIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,8 @@
 		6D4010E6171D263800F5A98E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		6D85295C171D497C002E0CDD /* Multimedia-53.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Multimedia-53.png"; sourceTree = "<group>"; };
 		6D85295E171D9668002E0CDD /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
+		6DB9694A1726833F0085CCF9 /* YRKSpinningProgressIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YRKSpinningProgressIndicator.h; sourceTree = "<group>"; };
+		6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YRKSpinningProgressIndicator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 			children = (
 				6D4010E2171D263800F5A98E /* SHAppDelegate.h */,
 				6D4010E3171D263800F5A98E /* SHAppDelegate.m */,
+				6DB9694A1726833F0085CCF9 /* YRKSpinningProgressIndicator.h */,
+				6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */,
 				6D4010E5171D263800F5A98E /* MainMenu.xib */,
 				6D4010D7171D263800F5A98E /* Supporting Files */,
 			);
@@ -177,6 +182,7 @@
 			files = (
 				6D4010DD171D263800F5A98E /* main.m in Sources */,
 				6D4010E4171D263800F5A98E /* SHAppDelegate.m in Sources */,
+				6DB9694C1726833F0085CCF9 /* YRKSpinningProgressIndicator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
