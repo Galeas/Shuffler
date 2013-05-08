@@ -8,23 +8,31 @@
 
 #import "SHAppDelegate.h"
 #import "YRKSpinningProgressIndicator.h"
-
-@interface SHAppDelegate()
+#import "SHID3TagWrapper.h"
+#import "OnOffSwitchControlCell.h"
+/*@interface SHAppDelegate()
 {
     BOOL needReload;
 }
-@end
+@end*/
+
+static NSString *const divider = @"<!>";
 
 @implementation SHAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
-    needReload = NO;
+    //needReload = NO;
     [self setNameLength:@(5)];
     [self setPercentage:@(0)];
     [self setIncludeSubdirs:YES];
     [self addObserver:self forKeyPath:@"includeSubdirs" options:NSKeyValueObservingOptionNew context:NULL];
+    
+    [self.nameTagsSwitch setOnSwitchLabel:@"Name"];
+    [self.nameTagsSwitch setOffSwitchLabel:@"Tags"];
+    [self.nameTagsSwitch setOnOffSwitchControlColors:OnOffSwitchControlCustomColors];
+    [self.nameTagsSwitch setOnOffSwitchCustomOnColor:[NSColor colorWithCalibratedRed:0.0 green:0.3 blue:1.0 alpha:0.6f] offColor:[NSColor colorWithCalibratedRed:1.0 green:.5 blue:0 alpha:.85]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -39,7 +47,11 @@
 - (IBAction)shuffle:(id)sender
 {
     [self setPercentage:@(0)];
-    if (needReload) {
+    [self pathsFrom:self.pathURL completion:^(NSArray* array){
+        [self setItems:array];
+        [self shuffleByIndex:[self.radioGroup selectedRow]];
+    }];
+    /*if (needReload) {
         [self setItems:nil];
         [self setToPerform:nil];
         [self pathsFrom:self.pathURL completion:^(NSArray* array){
@@ -49,7 +61,7 @@
     }
     else {
         [self shuffleByIndex:[self.radioGroup selectedRow]];
-    }
+    }*/
 }
 
 - (IBAction)loadContent:(id)sender
@@ -63,25 +75,23 @@
             [self setAllEnabled:YES];
             [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
             [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
-            if (needReload) needReload = NO;
+            //if (needReload) needReload = NO;
         }
     }];
 }
 
 - (void)shuffleByIndex:(NSInteger)index
 {
-    switch (index) {
-        case 0: {
-            [self renameByNumbers:[self toPerform]];
-            break;
-        }
-        case 1: {
-            [self renameByLetters:[self toPerform]];
-            break;
-        }
-        default: break;
+    if (self.nameTagsSwitch.state == 1) {
+        index == 0 ? ([self renameByNumbers:[self toPerform] completion:^{
+            [self clearAll];
+        }]) : ([self renameByLetters:[self toPerform] completion:^{
+            [self clearAll];
+        }]);
     }
-    needReload = YES;
+    else {
+        
+    }
 }
 
 - (void)setAllEnabled:(BOOL)enabled
@@ -96,16 +106,13 @@
         }
     }
 }
-/*
-- (NSArray *)items
+
+- (void)clearAll
 {
-    if (!_items) {
-        _items = [self pathsFrom:self.pathURL];
-        needReload = NO;
-    }
-    return _items;
+    [self setItems:nil];
+    [self setToPerform:nil];
 }
-*/
+
 - (NSArray *)toPerform
 {
     if (!_toPerform) {
@@ -155,11 +162,13 @@
             ind = nil;
         });
         
-        for (NSURL *url in enumerator) {
+        for (NSURL *url in enumerator) {            
             NSError *error;
             NSNumber *isDirectory = nil;
+            NSUInteger currentCount = result.count;
             if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
                 // handle error
+                NSLog(@"%@ ~ %@", url, error);
             }
             else if ([isDirectory boolValue]) {
                 allCount--;
@@ -177,13 +186,14 @@
                 if (!isHidden) {
                     if (!result) result = [NSMutableArray new];
                     [result addObject:url.path];
-                    
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        [self setPercentage:@(((float)result.count/(float)allCount)*100)];
-                        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", result.count]];
-                    });
                 }
             }
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                if ((currentCount < result.count) || (result.count == allCount)) {
+                    [self setPercentage:@(((float)result.count/(float)allCount)*100)];
+                    [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", result.count]];
+                }
+            });
         }
         if (completionHandler) {
             completionHandler(result);
@@ -191,9 +201,8 @@
     });
 }
 
-- (void)renameByLetters:(NSArray*)paths
+- (void)renameByLetters:(NSArray*)paths completion:(void(^)())completion
 {
-    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     NSInteger length = [self.nameLength integerValue];
     NSInteger total = self.items.count;
     __weak NSArray *weakPaths = paths;
@@ -205,7 +214,24 @@
             NSString *item = [[weakPaths objectAtIndex:used.count] lastPathComponent];
             NSString *directoryPath = [[weakPaths objectAtIndex:used.count] stringByDeletingLastPathComponent];
             if (![item hasPrefix:@"."]) {
-                NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
+                NSString *randomString = [self randomStringAccordingArray:used maxLength:length];
+                NSString *old_path = [weakPaths objectAtIndex:used.count];
+                NSString *fileName = [old_path lastPathComponent];
+                NSRange dividerRange = [fileName rangeOfString:divider];
+                if (dividerRange.location != NSNotFound) {
+                    NSUInteger dividerEnds = NSMaxRange(dividerRange);
+                    fileName = [fileName substringFromIndex:dividerEnds];
+                }
+                NSString *new_path = [directoryPath stringByAppendingPathComponent:[randomString stringByAppendingFormat:@"%@%@", divider, fileName]];
+                
+                [[NSFileManager defaultManager] moveItemAtPath:old_path toPath:new_path error:&error];
+                [used addObject:randomString];
+                
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
+                    [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
+                });
+                /*NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
                 for (int i=0; i<length; i++) {
                     [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
                 }
@@ -220,8 +246,14 @@
                 }
                 else {
                     NSString *old_path = [weakPaths objectAtIndex:used.count];
-                    NSString *ext = [item pathExtension];
-                    NSString *new_path = [[directoryPath stringByAppendingPathComponent:randomString] stringByAppendingPathExtension:ext];
+                    NSString *fileName = [old_path lastPathComponent];
+                    NSRange dividerRange = [fileName rangeOfString:divider];
+                    if (dividerRange.location != NSNotFound) {
+                        NSUInteger dividerEnds = NSMaxRange(dividerRange);
+                        fileName = [fileName substringFromIndex:dividerEnds];
+                    }
+                    NSString *new_path = [directoryPath stringByAppendingPathComponent:[randomString stringByAppendingFormat:@"%@%@", divider, fileName]];
+                    
                     [[NSFileManager defaultManager] moveItemAtPath:old_path toPath:new_path error:&error];
                     [used addObject:randomString];
                     
@@ -229,16 +261,19 @@
                         [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
                         [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
                     });
-                }
+                }*/
             }
             else {
                 [used addObject:@"error123"];
             }
         }
+        if (completion) {
+            completion();
+        }
     });
 }
 
-- (void)renameByNumbers:(NSArray*)paths
+- (void)renameByNumbers:(NSArray*)paths completion:(void(^)())completion
 {
     __weak NSArray *weakPaths = paths;
     NSInteger total = self.items.count;
@@ -250,30 +285,39 @@
             NSString *item = [[weakPaths objectAtIndex:used.count] lastPathComponent];
             NSString *directoryPath = [[weakPaths objectAtIndex:used.count] stringByDeletingLastPathComponent];
             if (![item hasPrefix:@"."]) {
-                int random = arc4random()%(weakPaths.count + 1);
-                if ([used containsObject:@(random)]) {
-                    while ([used containsObject:@(random)]) {
-                        random = arc4random()%(weakPaths.count + 1);
-                    }
-                }
-                else {
-                    NSString *old_path = [weakPaths objectAtIndex:used.count];
-                    NSString *ext = [item pathExtension];
-                    NSString *new_path = [[directoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", random]] stringByAppendingPathExtension:ext];
-                    [[NSFileManager defaultManager] moveItemAtPath:old_path toPath:new_path error:&error];
-                    [used addObject:@(random)];
+                int random = [self randomNumberAccordingArray:used max:[weakPaths count]];
+                
+                NSString *old_path = [weakPaths objectAtIndex:used.count];
+                NSString *fileName = [old_path lastPathComponent];
+                NSRange dividerRange = [fileName rangeOfString:divider];
+                if (dividerRange.location != NSNotFound) {
+                    NSUInteger dividerEnds = NSMaxRange(dividerRange);
+                    fileName = [fileName substringFromIndex:dividerEnds];
                     
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
-                        [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
-                    });
                 }
+                NSString *new_path = [directoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d%@%@", random, divider, fileName]];
+                [[NSFileManager defaultManager] moveItemAtPath:old_path toPath:new_path error:&error];
+                [used addObject:@(random)];
+                
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files. Renamed: %ld", total, used.count]];
+                    [self setPercentage:@(((float)used.count/(float)paths.count)*100)];
+                });
             }
             else {
                 [used addObject:@"error123"];
             }
         }
+        
+        if (completion) {
+            completion();
+        }
     });
+}
+
+- (void)retagByNumbers:(NSArray*)paths completion:(void(^)())completion
+{
+    
 }
 
 - (id)transformedValue:(id)value
@@ -309,4 +353,37 @@
     return [NSString stringWithFormat:@"%@", [self transformedValue:@([self sizeToPerform])]];
 }
 
+- (u_int32_t)randomNumberAccordingArray:(NSArray*)array max:(NSUInteger)max
+{
+    int random = arc4random()%(max + 1);
+    if ([array containsObject:@(random)]) {
+        while ([array containsObject:@(random)]) {
+            random = arc4random()%(max + 1);
+        }
+    }
+    return random;
+}
+
+- (NSString*)randomStringAccordingArray:(NSArray*)array maxLength:(NSUInteger)max
+{
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    NSUInteger len = (arc4random() % max) + 1;
+    if (len == 0)
+        NSLog(@"%ld", (unsigned long)len);
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:len];
+    for (int i = 0; i < len; i++) {
+        [randomString appendFormat:@"%C", [letters characterAtIndex:arc4random() % [letters length]]];
+    }
+    if ([array containsObject:randomString]) {
+        while ([array containsObject:randomString]) {
+            randomString = nil;
+            len = arc4random() % (max+1);
+            randomString = [NSMutableString stringWithCapacity:len];
+            for (int i = 0; i < len; i++) {
+                [randomString appendFormat:@"%C", [letters characterAtIndex:arc4random() % [letters length]]];
+            }
+        }
+    }
+    return (NSString*)randomString;
+}
 @end
