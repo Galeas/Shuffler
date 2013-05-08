@@ -23,6 +23,7 @@ static NSString *const divider = @"(divider)";
 {
     // Insert code here to initialize your application
     needReload = NO;
+    [self setShowLiveProgress:NO];
     [self setNameLength:@(5)];
     [self setPercentage:@(0)];
     [self setIncludeSubdirs:YES];
@@ -34,7 +35,7 @@ static NSString *const divider = @"(divider)";
     if ([keyPath isEqualToString:@"includeSubdirs"]) {
         [self setToPerform:nil];
         [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
-        [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
+        [self.totalSizeLabel setStringValue:[self foundSizeString:self.toPerform]];
     }
 }
 
@@ -65,7 +66,7 @@ static NSString *const divider = @"(divider)";
         if (self.items) {
             [self setAllEnabled:YES];
             [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", self.toPerform.count]];
-            [self.totalSizeLabel setStringValue:[self sizeToPerformString]];
+            [self.totalSizeLabel setStringValue:[self foundSizeString:self.toPerform]];
             if (needReload) needReload = NO;
         }
     }];
@@ -210,7 +211,10 @@ static NSString *const divider = @"(divider)";
                     
                     dispatch_sync(dispatch_get_main_queue(), ^{
                         [self setPercentage:@(((float)result.count/(float)allCount)*100)];
-                        [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", result.count]];
+                        if (self.showLiveProgress) {
+                            [self.foundLabel setStringValue:[NSString stringWithFormat:@"Found %ld files.", result.count]];
+                            [self.totalSizeLabel setStringValue:[self foundSizeString:result]];
+                        }
                     });
                 }
             }
@@ -298,10 +302,10 @@ static NSString *const divider = @"(divider)";
     return [NSString stringWithFormat:@"%4.2f %@",convertedValue, [tokens objectAtIndex:multiplyFactor]];
 }
 
-- (unsigned long long)sizeToPerform
+- (unsigned long long)foundSize:(NSArray*)items
 {
     unsigned long long totalSize = 0;
-    for (NSString *path in self.toPerform) {
+    for (NSString *path in items) {
         NSError *error = nil;
         NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
         if (!error) {
@@ -311,9 +315,9 @@ static NSString *const divider = @"(divider)";
     return totalSize;
 }
 
-- (NSString*)sizeToPerformString
+- (NSString*)foundSizeString:(NSArray*)foundItems
 {
-    return [NSString stringWithFormat:@"%@", [self transformedValue:@([self sizeToPerform])]];
+    return [NSString stringWithFormat:@"%@", [self transformedValue:@([self foundSize:foundItems])]];
 }
 
 - (NSString*)randomStringAccording:(NSArray*)array maxLength:(NSInteger)max numbers:(BOOL)onlyNumbers

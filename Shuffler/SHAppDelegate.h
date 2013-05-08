@@ -15,12 +15,14 @@
 @property (weak) IBOutlet NSMatrix *radioGroup;
 @property (weak) IBOutlet NSTextField *foundLabel;
 @property (weak) IBOutlet NSTextField *totalSizeLabel;
+@property (weak) IBOutlet NSMenuItem *showLiveProgressMenuItem;
 
 @property (weak) id nameLength;
 @property (assign) BOOL stringSelected;
 @property (weak) id percentage;
 @property (assign) BOOL includeSubdirs;
 @property (weak) NSURL *pathURL;
+@property (assign) BOOL showLiveProgress;
 
 @property (strong, nonatomic) NSArray *items;
 @property (strong, nonatomic) NSArray *toPerform;
