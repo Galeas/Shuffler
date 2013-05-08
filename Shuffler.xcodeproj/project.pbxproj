@@ -16,12 +16,6 @@
 		6D85295D171D497C002E0CDD /* Multimedia-53.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295C171D497C002E0CDD /* Multimedia-53.png */; };
 		6D85295F171D9668002E0CDD /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6D85295E171D9668002E0CDD /* icon.icns */; };
 		6DB9694C1726833F0085CCF9 /* YRKSpinningProgressIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		6DD7EAC31738F386002F1171 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD7EAC21738F386002F1171 /* AudioToolbox.framework */; };
-		6DD7EAC51738FE03002F1171 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD7EAC41738FE03002F1171 /* AVFoundation.framework */; };
-		6DD7EAC8173900D7002F1171 /* SHID3TagWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD7EAC7173900D7002F1171 /* SHID3TagWrapper.m */; };
-		6DD7EAD817391F62002F1171 /* OnOffSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD7EAD517391F62002F1171 /* OnOffSwitchControl.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		6DD7EAD917391F62002F1171 /* OnOffSwitchControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD7EAD717391F62002F1171 /* OnOffSwitchControlCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		6DD7EADB17391F9B002F1171 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD7EADA17391F9B002F1171 /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,15 +36,6 @@
 		6D85295E171D9668002E0CDD /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
 		6DB9694A1726833F0085CCF9 /* YRKSpinningProgressIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YRKSpinningProgressIndicator.h; sourceTree = "<group>"; };
 		6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YRKSpinningProgressIndicator.m; sourceTree = "<group>"; };
-		6DD7EAC21738F386002F1171 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		6DD7EAC41738FE03002F1171 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		6DD7EAC6173900D7002F1171 /* SHID3TagWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SHID3TagWrapper.h; sourceTree = "<group>"; };
-		6DD7EAC7173900D7002F1171 /* SHID3TagWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SHID3TagWrapper.m; sourceTree = "<group>"; };
-		6DD7EAD417391F62002F1171 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
-		6DD7EAD517391F62002F1171 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
-		6DD7EAD617391F62002F1171 /* OnOffSwitchControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControlCell.h; sourceTree = "<group>"; };
-		6DD7EAD717391F62002F1171 /* OnOffSwitchControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControlCell.m; sourceTree = "<group>"; };
-		6DD7EADA17391F9B002F1171 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +43,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DD7EADB17391F9B002F1171 /* Carbon.framework in Frameworks */,
-				6DD7EAC51738FE03002F1171 /* AVFoundation.framework in Frameworks */,
-				6DD7EAC31738F386002F1171 /* AudioToolbox.framework in Frameworks */,
 				6D4010D1171D263800F5A98E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,9 +53,6 @@
 		6D4010C4171D263800F5A98E = {
 			isa = PBXGroup;
 			children = (
-				6DD7EADA17391F9B002F1171 /* Carbon.framework */,
-				6DD7EAC41738FE03002F1171 /* AVFoundation.framework */,
-				6DD7EAC21738F386002F1171 /* AudioToolbox.framework */,
 				6D4010D6171D263800F5A98E /* Shuffler */,
 				6D4010CF171D263800F5A98E /* Frameworks */,
 				6D4010CE171D263800F5A98E /* Products */,
@@ -110,13 +89,10 @@
 		6D4010D6171D263800F5A98E /* Shuffler */ = {
 			isa = PBXGroup;
 			children = (
-				6DD7EAD317391E92002F1171 /* Switch */,
 				6D4010E2171D263800F5A98E /* SHAppDelegate.h */,
 				6D4010E3171D263800F5A98E /* SHAppDelegate.m */,
 				6DB9694A1726833F0085CCF9 /* YRKSpinningProgressIndicator.h */,
 				6DB9694B1726833F0085CCF9 /* YRKSpinningProgressIndicator.m */,
-				6DD7EAC6173900D7002F1171 /* SHID3TagWrapper.h */,
-				6DD7EAC7173900D7002F1171 /* SHID3TagWrapper.m */,
 				6D4010E5171D263800F5A98E /* MainMenu.xib */,
 				6D4010D7171D263800F5A98E /* Supporting Files */,
 			);
@@ -135,17 +111,6 @@
 				6D4010DF171D263800F5A98E /* Credits.rtf */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		6DD7EAD317391E92002F1171 /* Switch */ = {
-			isa = PBXGroup;
-			children = (
-				6DD7EAD417391F62002F1171 /* OnOffSwitchControl.h */,
-				6DD7EAD517391F62002F1171 /* OnOffSwitchControl.m */,
-				6DD7EAD617391F62002F1171 /* OnOffSwitchControlCell.h */,
-				6DD7EAD717391F62002F1171 /* OnOffSwitchControlCell.m */,
-			);
-			name = Switch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,9 +183,6 @@
 				6D4010DD171D263800F5A98E /* main.m in Sources */,
 				6D4010E4171D263800F5A98E /* SHAppDelegate.m in Sources */,
 				6DB9694C1726833F0085CCF9 /* YRKSpinningProgressIndicator.m in Sources */,
-				6DD7EAC8173900D7002F1171 /* SHID3TagWrapper.m in Sources */,
-				6DD7EAD817391F62002F1171 /* OnOffSwitchControl.m in Sources */,
-				6DD7EAD917391F62002F1171 /* OnOffSwitchControlCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

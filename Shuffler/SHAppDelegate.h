@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class OnOffSwitchControlCell;
 @interface SHAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
@@ -16,7 +15,6 @@
 @property (weak) IBOutlet NSMatrix *radioGroup;
 @property (weak) IBOutlet NSTextField *foundLabel;
 @property (weak) IBOutlet NSTextField *totalSizeLabel;
-@property (weak) IBOutlet OnOffSwitchControlCell *nameTagsSwitch;
 
 @property (weak) id nameLength;
 @property (assign) BOOL stringSelected;
