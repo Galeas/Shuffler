@@ -27,5 +27,7 @@
 
 - (IBAction)shuffle:(id)sender;
 - (IBAction)loadContent:(id)sender;
+- (IBAction)openByMenu:(id)sender;
+- (IBAction)undoRenaming:(id)sender;
 
 @end
